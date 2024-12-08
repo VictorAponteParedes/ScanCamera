@@ -1,33 +1,34 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, Text, TouchableOpacity, ActivityIndicator, Alert, Platform } from 'react-native';
+import { StyleSheet, View, Text, TouchableOpacity, ActivityIndicator, Alert } from 'react-native';
 import { Camera, useCameraDevices } from 'react-native-vision-camera';
-import { Permission, check, request, PERMISSIONS, RESULTS } from 'react-native-permissions';
+import requestCameraPermission from './src/helpers/index';
 
 const App: React.FC = () => {
   const devices = useCameraDevices('wide-angle-camera');
   const device = devices.back;
   const [isCameraActive, setIsCameraActive] = useState(false);
+  const [hasPermission, setHasPermission] = useState(false);
 
   useEffect(() => {
-    const requestCameraPermission = async () => {
-      const permission =
-        Platform.OS === 'android'
-          ? PERMISSIONS.ANDROID.CAMERA
-          : PERMISSIONS.IOS.CAMERA;
-
-      const status = await check(permission);
-      if (status === RESULTS.DENIED) {
-        const requestStatus = await request(permission);
-        if (requestStatus === RESULTS.GRANTED) {
-          console.log('Permission granted');
-        } else {
-          Alert.alert('Permiso denegado', 'No se pudo acceder a la cámara.');
-        }
+    const checkPermissions = async () => {
+      const granted = await requestCameraPermission();
+      if (granted) {
+        setHasPermission(true);
+      } else {
+        Alert.alert('Permiso denegado', 'No se pudo acceder a la cámara.');
       }
     };
 
-    requestCameraPermission();
+    checkPermissions();
   }, []);
+
+  if (!hasPermission) {
+    return (
+      <View style={styles.loadingContainer}>
+        <Text>Solicitando permisos...</Text>
+      </View>
+    );
+  }
 
   if (device == null) {
     return (
