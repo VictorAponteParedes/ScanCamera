@@ -1,0 +1,29 @@
+{
+    "compilerOptions": {
+        "target": "esnext",
+        "module": "esnext",
+        "strict": true,
+        "jsx": "react",
+        "moduleResolution": "node",
+        "allowJs": true,
+        "esModuleInterop": true,
+        "skipLibCheck": true,
+        "resolveJsonModule": true,
+        "baseUrl": "./",
+        "paths": {
+            "*": [
+                "node_modules/*"
+            ]
+        }
+    },
+    "include": [
+        "src/**/*",
+        "index.js",
+        "App.tsx"
+    ],
+    "exclude": [
+        "node_modules",
+        "babel.config.js",
+        "metro.config.js"
+    ]
+}
